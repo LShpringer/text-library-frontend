@@ -1,5 +1,6 @@
 // ВАЖНО: здесь должен быть адрес твоего бекенда на Render
 const API = 'https://text-library-backend.onrender.com';
+
 // простой админ-ключ
 let ADMIN_KEY = localStorage.getItem('admin_key') || '';
 
@@ -14,9 +15,11 @@ function ensureAdminKey() {
         localStorage.setItem('admin_key', ADMIN_KEY);
     }
 }
+
 let currentId = null;
 let quill;
 let currentView = 'texts'; // 'texts' или 'tags'
+let currentTagFilter = ''; // для фильтра по тегу
 
 function showTextsView() {
     currentView = 'texts';
@@ -40,11 +43,6 @@ function showTagsView() {
     document.getElementById('navTags').classList.add('active');
 }
 
-let currentId = null;
-let quill;
-let currentView = 'texts';
-let currentTagFilter = ''; // ← добавляем
-
 async function loadTexts() {
     const search = document.getElementById('search').value;
     const category = document.getElementById('categoryFilter').value;
@@ -64,7 +62,7 @@ async function loadTexts() {
 
 function renderTexts(texts) {
     const grid = document.getElementById('texts-grid');
-    if (texts.length === 0) {
+    if (!texts || texts.length === 0) {
         grid.innerHTML = '<div class="empty">Текстов пока нет. Добавьте первый! ✍️</div>';
         return;
     }
@@ -73,8 +71,11 @@ function renderTexts(texts) {
             <div class="card-category">${t.category || ''}</div>
             <h2>${t.title}</h2>
             <div class="card-preview">${stripHtml(t.content)}</div>
-            ${t.tags ? `<div class="card-tags">${t.tags.split(',').map(tag =>
-                `<span class="tag">${tag.trim()}</span>`).join('')}</div>` : ''}
+            ${t.tags ? `<div class="card-tags">${
+                t.tags.split(',').map(tag =>
+                    `<span class="tag">${tag.trim()}</span>`
+                ).join('')
+            }</div>` : ''}
             <div class="card-date">${new Date(t.created_at).toLocaleDateString('ru-RU')}</div>
         </div>
     `).join('');
@@ -112,6 +113,7 @@ function updateCategories(texts) {
         bar.appendChild(btn);
     });
 }
+
 function buildTagCloud(texts) {
     const container = document.getElementById('tagsView');
     const tagCounts = {};
@@ -131,7 +133,7 @@ function buildTagCloud(texts) {
         return;
     }
 
-    const counts = entries.map(([_, count]) => count);
+    const counts = entries.map(([, count]) => count);
     const min = Math.min(...counts);
     const max = Math.max(...counts);
 
@@ -141,10 +143,11 @@ function buildTagCloud(texts) {
     container.innerHTML = entries.map(([tag, count]) => {
         const weight = (count - min) / (max - min || 1);
         const size = minSize + (maxSize - minSize) * weight;
-        return `<span class="tag-cloud-item" 
-                     style="font-size: ${size}rem" 
-                     const safe = tag.replace(/'/g, "\\'").replace(/"/g, '\\"');
-                        onclick="filterByTag('${safe}')"
+        const safeTag = tag.replace(/'/g, "\\'").replace(/"/g, '\\"');
+
+        return `<span class="tag-cloud-item"
+                     style="font-size: ${size}rem"
+                     onclick="filterByTag('${safeTag}')">
                     ${tag}
                 </span>`;
     }).join('');
@@ -153,6 +156,7 @@ function buildTagCloud(texts) {
 function setCategoryFromChip(category) {
     const select = document.getElementById('categoryFilter');
     select.value = category;
+    currentTagFilter = ''; // сбрасываем фильтр по тегу при выборе категории
     loadTexts();
 }
 
@@ -286,6 +290,7 @@ function initEditor() {
         }
     });
 }
+
 function filterByTag(tag) {
     currentTagFilter = tag;
     document.getElementById('search').value = '';
