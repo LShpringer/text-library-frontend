@@ -315,3 +315,60 @@ main {
 .ql-container.ql-snow {
     border-radius: 0 0 8px 8px;
 }
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.main-nav {
+    display: flex;
+    gap: 8px;
+}
+
+.nav-link {
+    background: transparent;
+    border: none;
+    color: #ddd;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 999px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-link.active {
+    background: #f5f0e8;
+    color: #2c2c2c;
+}
+.tags-view {
+    margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag-cloud-item {
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f0ebe0;
+    color: #555;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.tag-cloud-item:hover {
+    transform: translateY(-2px);
+    background: #e2dccf;
+}
+
+.tag-cloud-item.active {
+    background: #2c2c2c;
+    color: white;
+}
+
+.hidden {
+    display: none !important;
+}
+
