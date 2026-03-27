@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Библиотека текстов</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="header-inner">
+        <h1>📚 Библиотека</h1>
+        <button class="btn-primary" onclick="openModal()">+ Новый текст</button>
+    </div>
+</header>
+
+<main>
+<main>
+    <div id="categoriesBar" class="categories-bar"></div>
+
+    <div class="search-bar">
+        <!-- как было -->
+    </div>
+
+    <div id="texts-grid" class="texts-grid"></div>
+</main>
+    <div class="search-bar">
+        <input type="text" id="search" placeholder="Поиск по названию или содержимому..." oninput="loadTexts()">
+        <select id="categoryFilter" onchange="loadTexts()">
+            <option value="">Все категории</option>
+        </select>
+    </div>
+
+    <div id="texts-grid" class="texts-grid"></div>
+</main>
+
+<!-- Модалка просмотра -->
+<div id="viewModal" class="modal hidden">
+    <div class="modal-content large">
+        <button class="close" onclick="closeViewModal()">✕</button>
+        <div id="viewContent"></div>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="editFromView()">✏️ Редактировать</button>
+            <button class="btn-danger" onclick="deleteFromView()">🗑 Удалить</button>
+        </div>
+    </div>
+</div>
+
+<!-- Модалка создания/редактирования -->
+<div id="editModal" class="modal hidden">
+    <div class="modal-content">
+        <button class="close" onclick="closeModal()">✕</button>
+        <h2 id="modalTitle">Новый текст</h2>
+        <input type="hidden" id="editId">
+        <label>Заголовок</label>
+        <input type="text" id="editTitle" placeholder="Название текста">
+        <label>Категория</label>
+        <input type="text" id="editCategory" placeholder="Например: Поэзия, Проза, Заметки">
+        <label>Теги</label>
+        <input type="text" id="editTags" placeholder="через запятую: история, средневековье">
+        <label>Текст</label>
+        <textarea id="editContent" rows="12" placeholder="Содержимое..."></textarea>
+        <div class="modal-actions">
+            <button class="btn-primary" onclick="saveText()">💾 Сохранить</button>
+            <button class="btn-secondary" onclick="closeModal()">Отмена</button>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="app.js"></script>
+
+<script src="app.js"></script>
+</body>
+</html>
