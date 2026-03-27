@@ -140,18 +140,23 @@ function buildTagCloud(texts) {
     const minSize = 0.8;
     const maxSize = 1.6;
 
-    container.innerHTML = entries.map(([tag, count]) => {
+    container.innerHTML = '';
+
+    entries.forEach(([tag, count]) => {
         const weight = (count - min) / (max - min || 1);
         const size = minSize + (maxSize - minSize) * weight;
-        const safeTag = tag.replace(/'/g, "\\'").replace(/"/g, '\\"');
 
-        return `<span class="tag-cloud-item"
-                     style="font-size: ${size}rem"
-                     onclick="filterByTag('${safeTag}')">
-                    ${tag}
-                </span>`;
-    }).join('');
+        const span = document.createElement('span');
+        span.className = 'tag-cloud-item';
+        span.textContent = tag;
+        span.style.fontSize = `${size}rem`;
+        span.addEventListener('click', () => filterByTag(tag));
+
+        container.appendChild(span);
+        container.appendChild(document.createTextNode(' '));
+    });
 }
+
 
 function setCategoryFromChip(category) {
     const select = document.getElementById('categoryFilter');
