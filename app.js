@@ -1,6 +1,7 @@
 <script src="https://cdn.jsdelivr.net/npm/[email protected]/dist/quill.js"></script>
 <script src="app.js"></script>
 const API = 'https://text-library-backend.onrender.com';
+let quill;
 let ADMIN_KEY = localStorage.getItem('admin_key') || '';
 
 function ensureAdminKey() {
@@ -92,7 +93,7 @@ async function openText(id) {
     document.getElementById('viewContent').innerHTML = `
         <h2>${t.title}</h2>
         <div class="meta">${t.category} · ${t.tags} · ${new Date(t.created_at).toLocaleDateString('ru-RU')}</div>
-        <div class="body">${marked.parse(t.content)}</div>
+        <div class="body">${t.content}</div>
     `;
     document.getElementById('viewModal').classList.remove('hidden');
 }
@@ -107,7 +108,12 @@ function openModal(text = null) {
     document.getElementById('editTitle').value = text ? text.title : '';
     document.getElementById('editCategory').value = text ? text.category : '';
     document.getElementById('editTags').value = text ? text.tags : '';
-    document.getElementById('editContent').value = text ? text.content : '';
+    if (text) {
+    quill.root.innerHTML = text.content;
+} else {
+    quill.root.innerHTML = '';
+}
+
     document.getElementById('modalTitle').textContent = text ? 'Редактировать' : 'Новый текст';
     document.getElementById('editModal').classList.remove('hidden');
 }
@@ -147,7 +153,7 @@ async function saveText() {
         title: document.getElementById('editTitle').value,
         category: document.getElementById('editCategory').value,
         tags: document.getElementById('editTags').value,
-        content: document.getElementById('editContent').value,
+        content: quill.root.innerHTML,
     };
 
     const url = id ? `${API}/texts/${id}` : `${API}/texts/`;
@@ -169,6 +175,24 @@ async function saveText() {
 
 
     closeModal();
+    function initEditor() {
+    quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ header: [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline'],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['link'],
+                ['clean'],
+            ]
+        }
+    });
+}
+
+initEditor();
+loadTexts();
+
     loadTexts();
 }
 
