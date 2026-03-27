@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Библиотека текстов</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/[email protected]/dist/quill.snow.css" rel="stylesheet">
 </head>
 <body>
 
@@ -60,7 +61,8 @@
         <label>Теги</label>
         <input type="text" id="editTags" placeholder="через запятую: история, средневековье">
         <label>Текст</label>
-        <textarea id="editContent" rows="12" placeholder="Содержимое..."></textarea>
+        <div id="editorToolbar"></div>
+        <div id="editor" style="height: 300px;"></div>
         <div class="modal-actions">
             <button class="btn-primary" onclick="saveText()">💾 Сохранить</button>
             <button class="btn-secondary" onclick="closeModal()">Отмена</button>
