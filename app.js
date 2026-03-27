@@ -199,8 +199,8 @@ function buildTagCloud(texts) {
         const counts = entries.map(([, count]) => count);
         const min = Math.min(...counts);
         const max = Math.max(...counts);
-        const minSize = 0.8;
-        const maxSize = 1.6;
+        const minSize = 1.1;
+        const maxSize = 2.4;
 
         entries.forEach(([tag, count]) => {
             const weight = (count - min) / (max - min || 1);
