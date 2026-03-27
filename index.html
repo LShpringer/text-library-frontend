@@ -14,7 +14,13 @@
 
 <header>
     <div class="header-inner">
-        <h1>📚 Библиотека</h1>
+        <div class="header-left">
+            <h1>📚 Библиотека</h1>
+            <nav class="main-nav">
+                <button class="nav-link active" id="navTexts" onclick="showTextsView()">Тексты</button>
+                <button class="nav-link" id="navTags" onclick="showTagsView()">Теги</button>
+            </nav>
+        </div>
         <button class="btn-primary" onclick="openModal()">+ Новый текст</button>
     </div>
 </header>
@@ -22,7 +28,7 @@
 <main>
     <div id="categoriesBar" class="categories-bar"></div>
 
-    <div class="search-bar">
+    <div class="search-bar" id="searchBar">
         <input type="text" id="search" placeholder="Поиск по названию или содержимому..." oninput="loadTexts()">
         <select id="categoryFilter" onchange="loadTexts()">
             <option value="">Все категории</option>
@@ -30,6 +36,8 @@
     </div>
 
     <div id="texts-grid" class="texts-grid"></div>
+
+    <div id="tagsView" class="tags-view hidden"></div>
 </main>
 
 <!-- Модалка просмотра -->
