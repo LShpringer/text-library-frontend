@@ -1,4 +1,17 @@
 const API = 'https://text-library-backend.onrender.com';
+let ADMIN_KEY = localStorage.getItem('admin_key') || '';
+
+function ensureAdminKey() {
+    if (!ADMIN_KEY) {
+        const k = prompt('Введите админ-ключ:');
+        if (!k) {
+            alert('Без ключа нельзя редактировать.');
+            throw new Error('No admin key');
+        }
+        ADMIN_KEY = k;
+        localStorage.setItem('admin_key', ADMIN_KEY);
+    }
+}
 let currentId = null;
 
 async function loadTexts() {
@@ -110,10 +123,21 @@ async function editFromView() {
 
 async function deleteFromView() {
     if (!confirm('Удалить этот текст?')) return;
-    await fetch(`${API}/texts/${currentId}`, { method: 'DELETE' });
+    try {
+        ensureAdminKey();
+    } catch {
+        return;
+    }
+    await fetch(`${API}/texts/${currentId}`, {
+        method: 'DELETE',
+        headers: {
+            'X-Admin-Key': ADMIN_KEY,
+        },
+    });
     closeViewModal();
     loadTexts();
 }
+
 
 async function saveText() {
     const id = document.getElementById('editId').value;
@@ -126,12 +150,21 @@ async function saveText() {
 
     const url = id ? `${API}/texts/${id}` : `${API}/texts/`;
     const method = id ? 'PUT' : 'POST';
+    try {
+        ensureAdminKey();
+        } catch {
+        return;
+        }
 
     await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    });
+    method,
+    headers: {
+        'Content-Type': 'application/json',
+        'X-Admin-Key': ADMIN_KEY,
+    },
+    body: JSON.stringify(body)
+});
+
 
     closeModal();
     loadTexts();
