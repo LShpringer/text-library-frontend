@@ -110,6 +110,11 @@ function closeViewModal() {
 }
 
 function openModal(text = null) {
+    try {
+        ensureAdminKey();
+    } catch {
+        return;
+    }
     document.getElementById('editId').value = text ? text.id : '';
     document.getElementById('editTitle').value = text ? text.title : '';
     document.getElementById('editCategory').value = text ? text.category : '';
