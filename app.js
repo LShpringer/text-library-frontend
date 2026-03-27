@@ -336,9 +336,9 @@ function filterByTag(tag) {
 document.getElementById('viewModal').addEventListener('click', e => {
     if (e.target === e.currentTarget) closeViewModal();
 });
-document.getElementById('editModal').addEventListener('click', e => {
-    if (e.target === e.currentTarget) closeModal();
-});
+//document.getElementById('editModal').addEventListener('click', e => {
+   // if (e.target === e.currentTarget) closeModal();
+//});
 
 function initEditor() {
     quill = new Quill('#editor', {
