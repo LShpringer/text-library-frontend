@@ -1,19 +1,4 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
-#viewContent .body h1,
-#viewContent .body h2,
-#viewContent .body h3 {
-    margin-top: 1.2em;
-    margin-bottom: 0.4em;
-}
-
-#viewContent .body p {
-    margin-bottom: 0.6em;
-}
-
-#viewContent .body ul,
-#viewContent .body ol {
-    margin: 0.6em 0 0.6em 1.4em;
-}
 
 body {
     font-family: 'Georgia', serif;
@@ -76,6 +61,30 @@ main {
     background: white;
     cursor: pointer;
     outline: none;
+}
+
+/* Категории-чипсы */
+.categories-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.category-chip {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid #ccc;
+    background: #f0ebe0;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.category-chip.active {
+    background: #2c2c2c;
+    color: white;
+    border-color: #2c2c2c;
 }
 
 .texts-grid {
@@ -220,8 +229,7 @@ main {
     color: #555;
 }
 
-.modal-content input,
-.modal-content textarea {
+.modal-content input {
     width: 100%;
     padding: 10px 14px;
     border: 2px solid #ddd;
@@ -230,11 +238,11 @@ main {
     font-family: inherit;
     outline: none;
     transition: border 0.2s;
-    resize: vertical;
 }
 
-.modal-content input:focus,
-.modal-content textarea:focus { border-color: #2c2c2c; }
+.modal-content input:focus {
+    border-color: #2c2c2c;
+}
 
 .modal-actions {
     display: flex;
@@ -253,9 +261,38 @@ main {
     color: #888;
 }
 
-#viewContent h2 { font-size: 1.6rem; margin-bottom: 8px; }
-#viewContent .meta { color: #888; font-size: 0.85rem; margin-bottom: 20px; }
-#viewContent .body { line-height: 1.9; white-space: pre-wrap; font-size: 1rem; }
+#viewContent h2 {
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+}
+
+#viewContent .meta {
+    color: #888;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+}
+
+#viewContent .body {
+    line-height: 1.9;
+    font-size: 1rem;
+}
+
+/* Разметка внутри body */
+#viewContent .body h1,
+#viewContent .body h2,
+#viewContent .body h3 {
+    margin-top: 1.2em;
+    margin-bottom: 0.4em;
+}
+
+#viewContent .body p {
+    margin-bottom: 0.6em;
+}
+
+#viewContent .body ul,
+#viewContent .body ol {
+    margin: 0.6em 0 0.6em 1.4em;
+}
 
 .empty {
     text-align: center;
@@ -264,29 +301,8 @@ main {
     padding: 60px 0;
     grid-column: 1/-1;
 }
-.categories-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
-}
 
-.category-chip {
-    padding: 6px 12px;
-    border-radius: 999px;
-    border: 1px solid #ccc;
-    background: #f0ebe0;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: background 0.2s, border-color 0.2s;
-}
-
-.category-chip.active {
-    background: #2c2c2c;
-    color: white;
-    border-color: #2c2c2c;
-}
-
+/* Quill editor styling */
 #editor {
     background: white;
     border-radius: 8px;
@@ -299,4 +315,3 @@ main {
 .ql-container.ql-snow {
     border-radius: 0 0 8px 8px;
 }
-
