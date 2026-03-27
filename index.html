@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Библиотека текстов</title>
+
+    <!-- Quill editor styles -->
+    <link href="https://cdn.jsdelivr.net/npm/[email protected]/dist/quill.snow.css" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/[email protected]/dist/quill.snow.css" rel="stylesheet">
 </head>
 <body>
 
@@ -17,15 +20,8 @@
 </header>
 
 <main>
-<main>
     <div id="categoriesBar" class="categories-bar"></div>
 
-    <div class="search-bar">
-        <!-- как было -->
-    </div>
-
-    <div id="texts-grid" class="texts-grid"></div>
-</main>
     <div class="search-bar">
         <input type="text" id="search" placeholder="Поиск по названию или содержимому..." oninput="loadTexts()">
         <select id="categoryFilter" onchange="loadTexts()">
@@ -69,9 +65,9 @@
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="app.js"></script>
 
+<!-- Quill editor script -->
+<script src="https://cdn.jsdelivr.net/npm/[email protected]/dist/quill.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
