@@ -235,4 +235,134 @@ function setCategoryFromChip(category) {
 async function openText(id) {
     currentId = id;
     const res = await fetch(`${API}/texts/${id}`);
-    const t =
+    const t = await res.json();
+
+    document.getElementById('viewContent').innerHTML = `
+        <h2>${t.title}</h2>
+        <div class="meta">${t.category || ''} · ${t.tags || ''} · ${new Date(t.created_at).toLocaleDateString('ru-RU')}</div>
+        <div class="body">${t.content}</div>
+    `;
+    document.getElementById('viewModal').classList.remove('hidden');
+}
+
+function closeViewModal() {
+    document.getElementById('viewModal').classList.add('hidden');
+    currentId = null;
+}
+
+function openModal(text = null) {
+    try {
+        ensureAdminKey();
+    } catch {
+        return;
+    }
+    document.getElementById('editId').value = text ? text.id : '';
+    document.getElementById('editTitle').value = text ? text.title : '';
+    document.getElementById('editCategory').value = text ? text.category : '';
+    document.getElementById('editTags').value = text ? text.tags : '';
+    document.getElementById('modalTitle').textContent = text ? 'Редактировать' : 'Новый текст';
+
+    if (text && quill) {
+        quill.root.innerHTML = text.content || '';
+    } else if (quill) {
+        quill.root.innerHTML = '';
+    }
+
+    document.getElementById('editModal').classList.remove('hidden');
+}
+
+function closeModal() {
+    document.getElementById('editModal').classList.add('hidden');
+}
+
+async function editFromView() {
+    const res = await fetch(`${API}/texts/${currentId}`);
+    const text = await res.json();
+    closeViewModal();
+    openModal(text);
+}
+
+async function deleteFromView() {
+    if (!confirm('Удалить этот текст?')) return;
+    try {
+        ensureAdminKey();
+    } catch {
+        return;
+    }
+    await fetch(`${API}/texts/${currentId}`, {
+        method: 'DELETE',
+        headers: { 'X-Admin-Key': ADMIN_KEY },
+    });
+    closeViewModal();
+    loadTexts();
+}
+
+async function saveText() {
+    const id = document.getElementById('editId').value;
+    const body = {
+        title: document.getElementById('editTitle').value,
+        category: document.getElementById('editCategory').value,
+        tags: document.getElementById('editTags').value,
+        content: quill ? quill.root.innerHTML : '',
+    };
+
+    const url = id ? `${API}/texts/${id}` : `${API}/texts/`;
+    const method = id ? 'PUT' : 'POST';
+
+    try {
+        ensureAdminKey();
+    } catch {
+        return;
+    }
+
+    await fetch(url, {
+        method,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Key': ADMIN_KEY,
+        },
+        body: JSON.stringify(body)
+    });
+
+    closeModal();
+    loadTexts();
+}
+
+function filterByTag(tag) {
+    currentTagFilter = tag;
+    loadTexts();
+}
+
+document.getElementById('viewModal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeViewModal();
+});
+document.getElementById('editModal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeModal();
+});
+
+function initEditor() {
+    quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ header: [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline'],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['link', 'image'],
+                ['clean'],
+            ]
+        }
+    });
+
+    const toolbar = quill.getModule('toolbar');
+    toolbar.addHandler('image', () => {
+        const url = prompt('Вставьте ссылку на картинку (URL):');
+        if (url) {
+            const range = quill.getSelection(true);
+            quill.insertEmbed(range.index, 'image', url, 'user');
+        }
+    });
+}
+
+initEditor();
+loadTexts();
