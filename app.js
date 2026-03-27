@@ -1,4 +1,4 @@
-const API = 'http://localhost:8000';
+const API = 'https://text-library-backend.onrender.com';
 let currentId = null;
 
 async function loadTexts() {
