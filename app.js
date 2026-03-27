@@ -1,3 +1,5 @@
+<script src="https://cdn.jsdelivr.net/npm/[email protected]/dist/quill.js"></script>
+<script src="app.js"></script>
 const API = 'https://text-library-backend.onrender.com';
 let ADMIN_KEY = localStorage.getItem('admin_key') || '';
 
