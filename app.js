@@ -217,8 +217,5 @@ function initEditor() {
     });
 }
 
-    });
-}
-
 initEditor();
 loadTexts();
