@@ -222,7 +222,13 @@ main {
 }
 
 .modal-content.large {
-    max-width: 760px;
+    max-width: 100%;
+    width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    padding: 48px 80px;
+    overflow-y: auto;
 }
 
 /* Редактор — на весь экран */
@@ -395,21 +401,6 @@ tag-cloud-item {
     line-height: 1.6;
 }
 
-.tag-cloud-item:hover {
-    background: #d0e8ff;
-    transform: scale(1.08);
-}
-
-.tag-cloud-item.active {
-    background: #4a90d9;
-    color: #fff;
-    font-weight: 700;
-}
-
-.tag-cloud-item.active {
-    background: #2c2c2c;
-    color: white;
-}
 
 .tag-results-header {
     display: flex;
@@ -439,23 +430,49 @@ tag-cloud-item {
     margin-top: 8px;
 }
 
-.tag-cloud-item.active {
-    font-weight: bold;
-    text-decoration: underline;
-}
-
 
 .hidden {
     display: none !important;
 }
 
-.modal.fullscreen .modal-content.large {
-    max-width: 860px;
-    width: 100%;
-    height: 100vh;
-    max-height: 100vh;
-    border-radius: 0;
-    padding: 48px 80px;
-    overflow-y: auto;
+/* Облако тегов */
+.tags-view {
+    margin-top: 32px;
+    padding: 40px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 16px;
+    line-height: 2;
+}
+
+.tag-cloud-item {
+    display: inline-block;
+    cursor: pointer;
+    padding: 6px 18px;
+    border-radius: 999px;
+    background: #f0ebe0;
+    color: #2c2c2c;
+    font-family: 'Georgia', serif;
+    font-weight: 500;
+    border: 1.5px solid transparent;
+    transition: background 0.2s, transform 0.15s, border-color 0.2s;
+    white-space: nowrap;
+}
+
+.tag-cloud-item:hover {
+    background: #e2dccf;
+    border-color: #2c2c2c;
+    transform: translateY(-2px);
+}
+
+.tag-cloud-item.active {
+    background: #2c2c2c;
+    color: white;
+    border-color: #2c2c2c;
+    font-weight: 700;
 }
 
