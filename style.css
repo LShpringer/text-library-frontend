@@ -477,11 +477,21 @@ tag-cloud-item {
     font-weight: 700;
 }
 
+/* Картинки в просмотре статьи */
 #viewContent .body img {
-    max-width: 100%;
+    max-width: 60%;
     height: auto;
     display: block;
     margin: 16px auto;
+    border-radius: 8px;
+}
+
+/* Картинки внутри Quill-редактора при редактировании */
+.ql-editor img {
+    max-width: 60%;
+    height: auto;
+    display: block;
+    margin: 12px auto;
     border-radius: 8px;
 }
 
