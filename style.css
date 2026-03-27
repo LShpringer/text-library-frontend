@@ -349,18 +349,29 @@ main {
     gap: 10px;
 }
 
-.tag-cloud-item {
+tag-cloud-item {
+    display: inline-block;
     cursor: pointer;
-    padding: 4px 10px;
-    border-radius: 999px;
-    background: #f0ebe0;
-    color: #555;
-    transition: transform 0.2s, background 0.2s;
+    padding: 6px 14px;
+    margin: 5px 4px;
+    border-radius: 20px;
+    background: #f0f0f0;
+    color: #333;
+    font-size: 1rem; /* базовый, JS поверх него множит от 0.8 до 1.6rem */
+    font-weight: 500;
+    transition: background 0.2s, transform 0.15s;
+    line-height: 1.6;
 }
 
 .tag-cloud-item:hover {
-    transform: translateY(-2px);
-    background: #e2dccf;
+    background: #d0e8ff;
+    transform: scale(1.08);
+}
+
+.tag-cloud-item.active {
+    background: #4a90d9;
+    color: #fff;
+    font-weight: 700;
 }
 
 .tag-cloud-item.active {
