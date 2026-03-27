@@ -1,7 +1,10 @@
-<script src="https://cdn.jsdelivr.net/npm/[email protected]/dist/quill.js"></script>
-<script src="app.js"></script>
+// ВАЖНО: здесь должен быть адрес твоего бекенда на Render
 const API = 'https://text-library-backend.onrender.com';
+
+let currentId = null;
 let quill;
+
+// простой админ-ключ
 let ADMIN_KEY = localStorage.getItem('admin_key') || '';
 
 function ensureAdminKey() {
@@ -15,7 +18,6 @@ function ensureAdminKey() {
         localStorage.setItem('admin_key', ADMIN_KEY);
     }
 }
-let currentId = null;
 
 async function loadTexts() {
     const search = document.getElementById('search').value;
@@ -42,12 +44,19 @@ function renderTexts(texts) {
         <div class="card" onclick="openText(${t.id})">
             <div class="card-category">${t.category || ''}</div>
             <h2>${t.title}</h2>
-            <div class="card-preview">${t.content}</div>
+            <div class="card-preview">${stripHtml(t.content)}</div>
             ${t.tags ? `<div class="card-tags">${t.tags.split(',').map(tag =>
                 `<span class="tag">${tag.trim()}</span>`).join('')}</div>` : ''}
             <div class="card-date">${new Date(t.created_at).toLocaleDateString('ru-RU')}</div>
         </div>
     `).join('');
+}
+
+// убрать HTML-теги для превью
+function stripHtml(html) {
+    const div = document.createElement('div');
+    div.innerHTML = html || '';
+    return div.textContent || div.innerText || '';
 }
 
 function updateCategories(texts) {
@@ -57,11 +66,9 @@ function updateCategories(texts) {
 
     const cats = [...new Set(texts.map(t => t.category).filter(Boolean))];
 
-    // Обновляем select
     select.innerHTML = '<option value="">Все категории</option>' +
         cats.map(c => `<option value="${c}" ${c === current ? 'selected' : ''}>${c}</option>`).join('');
 
-    // Обновляем кнопки-категории
     bar.innerHTML = '';
     const allBtn = document.createElement('button');
     allBtn.textContent = 'Все';
@@ -84,7 +91,6 @@ function setCategoryFromChip(category) {
     loadTexts();
 }
 
-
 async function openText(id) {
     currentId = id;
     const res = await fetch(`${API}/texts/${id}`);
@@ -92,7 +98,7 @@ async function openText(id) {
 
     document.getElementById('viewContent').innerHTML = `
         <h2>${t.title}</h2>
-        <div class="meta">${t.category} · ${t.tags} · ${new Date(t.created_at).toLocaleDateString('ru-RU')}</div>
+        <div class="meta">${t.category || ''} · ${t.tags || ''} · ${new Date(t.created_at).toLocaleDateString('ru-RU')}</div>
         <div class="body">${t.content}</div>
     `;
     document.getElementById('viewModal').classList.remove('hidden');
@@ -108,13 +114,14 @@ function openModal(text = null) {
     document.getElementById('editTitle').value = text ? text.title : '';
     document.getElementById('editCategory').value = text ? text.category : '';
     document.getElementById('editTags').value = text ? text.tags : '';
-    if (text) {
-    quill.root.innerHTML = text.content;
-} else {
-    quill.root.innerHTML = '';
-}
-
     document.getElementById('modalTitle').textContent = text ? 'Редактировать' : 'Новый текст';
+
+    if (text && quill) {
+        quill.root.innerHTML = text.content || '';
+    } else if (quill) {
+        quill.root.innerHTML = '';
+    }
+
     document.getElementById('editModal').classList.remove('hidden');
 }
 
@@ -146,36 +153,47 @@ async function deleteFromView() {
     loadTexts();
 }
 
-
 async function saveText() {
     const id = document.getElementById('editId').value;
     const body = {
         title: document.getElementById('editTitle').value,
         category: document.getElementById('editCategory').value,
         tags: document.getElementById('editTags').value,
-        content: quill.root.innerHTML,
+        content: quill ? quill.root.innerHTML : '',
     };
 
     const url = id ? `${API}/texts/${id}` : `${API}/texts/`;
     const method = id ? 'PUT' : 'POST';
+
     try {
         ensureAdminKey();
-        } catch {
+    } catch {
         return;
-        }
+    }
 
     await fetch(url, {
-    method,
-    headers: {
-        'Content-Type': 'application/json',
-        'X-Admin-Key': ADMIN_KEY,
-    },
-    body: JSON.stringify(body)
-});
-
+        method,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Key': ADMIN_KEY,
+        },
+        body: JSON.stringify(body)
+    });
 
     closeModal();
-    function initEditor() {
+    loadTexts();
+}
+
+// Закрытие по клику на фон
+document.getElementById('viewModal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeViewModal();
+});
+document.getElementById('editModal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeModal();
+});
+
+// Инициализация редактора
+function initEditor() {
     quill = new Quill('#editor', {
         theme: 'snow',
         modules: {
@@ -191,17 +209,4 @@ async function saveText() {
 }
 
 initEditor();
-loadTexts();
-
-    loadTexts();
-}
-
-// Закрытие по клику на фон
-document.getElementById('viewModal').addEventListener('click', e => {
-    if (e.target === e.currentTarget) closeViewModal();
-});
-document.getElementById('editModal').addEventListener('click', e => {
-    if (e.target === e.currentTarget) closeModal();
-});
-
 loadTexts();
