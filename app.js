@@ -40,13 +40,19 @@ function showTagsView() {
     document.getElementById('navTags').classList.add('active');
 }
 
+let currentId = null;
+let quill;
+let currentView = 'texts';
+let currentTagFilter = ''; // ← добавляем
+
 async function loadTexts() {
     const search = document.getElementById('search').value;
     const category = document.getElementById('categoryFilter').value;
 
     let url = `${API}/texts?`;
     if (search) url += `search=${encodeURIComponent(search)}&`;
-    if (category) url += `category=${encodeURIComponent(category)}`;
+    if (category) url += `category=${encodeURIComponent(category)}&`;
+    if (currentTagFilter) url += `tag=${encodeURIComponent(currentTagFilter)}`;
 
     const res = await fetch(url);
     const texts = await res.json();
@@ -54,7 +60,6 @@ async function loadTexts() {
     renderTexts(texts);
     updateCategories(texts);
     buildTagCloud(texts);
-    
 }
 
 function renderTexts(texts) {
@@ -282,8 +287,8 @@ function initEditor() {
     });
 }
 function filterByTag(tag) {
-    // ставим текст в поиск по тегам
-    document.getElementById('search').value = tag;
+    currentTagFilter = tag;
+    document.getElementById('search').value = '';
     showTextsView();
     loadTexts();
 }
