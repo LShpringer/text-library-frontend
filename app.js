@@ -1,4 +1,4 @@
-const API = 'https://text-library-backend.onrender.com';
+const API = 'https://lshpringer.github.io/text-library-frontend/';
 let currentId = null;
 
 async function loadTexts() {
