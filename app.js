@@ -1,9 +1,5 @@
 // ВАЖНО: здесь должен быть адрес твоего бекенда на Render
 const API = 'https://text-library-backend.onrender.com';
-
-let currentId = null;
-let quill;
-
 // простой админ-ключ
 let ADMIN_KEY = localStorage.getItem('admin_key') || '';
 
@@ -17,6 +13,31 @@ function ensureAdminKey() {
         ADMIN_KEY = k;
         localStorage.setItem('admin_key', ADMIN_KEY);
     }
+}
+let currentId = null;
+let quill;
+let currentView = 'texts'; // 'texts' или 'tags'
+
+function showTextsView() {
+    currentView = 'texts';
+    document.getElementById('texts-grid').classList.remove('hidden');
+    document.getElementById('searchBar').classList.remove('hidden');
+    document.getElementById('categoriesBar').classList.remove('hidden');
+    document.getElementById('tagsView').classList.add('hidden');
+
+    document.getElementById('navTexts').classList.add('active');
+    document.getElementById('navTags').classList.remove('active');
+}
+
+function showTagsView() {
+    currentView = 'tags';
+    document.getElementById('texts-grid').classList.add('hidden');
+    document.getElementById('searchBar').classList.add('hidden');
+    document.getElementById('categoriesBar').classList.add('hidden');
+    document.getElementById('tagsView').classList.remove('hidden');
+
+    document.getElementById('navTexts').classList.remove('active');
+    document.getElementById('navTags').classList.add('active');
 }
 
 async function loadTexts() {
@@ -32,6 +53,8 @@ async function loadTexts() {
 
     renderTexts(texts);
     updateCategories(texts);
+    buildTagCloud(texts);
+    
 }
 
 function renderTexts(texts) {
@@ -83,6 +106,43 @@ function updateCategories(texts) {
         btn.onclick = () => setCategoryFromChip(c);
         bar.appendChild(btn);
     });
+}
+function buildTagCloud(texts) {
+    const container = document.getElementById('tagsView');
+    const tagCounts = {};
+
+    texts.forEach(t => {
+        if (!t.tags) return;
+        t.tags.split(',').forEach(raw => {
+            const tag = raw.trim();
+            if (!tag) return;
+            tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        });
+    });
+
+    const entries = Object.entries(tagCounts);
+    if (entries.length === 0) {
+        container.innerHTML = '<div class="empty">Тегов пока нет.</div>';
+        return;
+    }
+
+    const counts = entries.map(([_, count]) => count);
+    const min = Math.min(...counts);
+    const max = Math.max(...counts);
+
+    const minSize = 0.8;
+    const maxSize = 1.6;
+
+    container.innerHTML = entries.map(([tag, count]) => {
+        const weight = (count - min) / (max - min || 1);
+        const size = minSize + (maxSize - minSize) * weight;
+        return `<span class="tag-cloud-item" 
+                     style="font-size: ${size}rem" 
+                     const safe = tag.replace(/'/g, "\\'").replace(/"/g, '\\"');
+                        onclick="filterByTag('${safe}')"
+                    ${tag}
+                </span>`;
+    }).join('');
 }
 
 function setCategoryFromChip(category) {
@@ -220,6 +280,12 @@ function initEditor() {
             quill.insertEmbed(range.index, 'image', url, 'user');
         }
     });
+}
+function filterByTag(tag) {
+    // ставим текст в поиск по тегам
+    document.getElementById('search').value = tag;
+    showTextsView();
+    loadTexts();
 }
 
 initEditor();
