@@ -198,13 +198,25 @@ function initEditor() {
         theme: 'snow',
         modules: {
             toolbar: [
-    [{ header: [1, 2, 3, false] }],
-    ['bold', 'italic', 'underline'],
-    [{ list: 'ordered' }, { list: 'bullet' }],
-    ['link', 'image'],
-    ['clean'],
-]
+                [{ header: [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline'],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['link', 'image'],
+                ['clean'],
+            ]
         }
+    });
+
+    const toolbar = quill.getModule('toolbar');
+    toolbar.addHandler('image', () => {
+        const url = prompt('Вставьте ссылку на картинку (URL):');
+        if (url) {
+            const range = quill.getSelection(true);
+            quill.insertEmbed(range.index, 'image', url, 'user');
+        }
+    });
+}
+
     });
 }
 
